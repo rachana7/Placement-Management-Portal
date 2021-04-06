@@ -2,9 +2,9 @@
 Interview management software that helps students, companies to register and communicate all the information in the portal
 
 The project named “Placement Management System”, a student/company information system is a window based application created in JavaScript, CSS, HTML, and PHP. The project has been developed on the basis of “Placement Cell” being presently used in the Universities for storing and retrieving the information of students and companies who are registered in placement cell. The Placement Cell maintains a large database of students wherein all the information of student including the personal records and the academic performance in terms of the marks and grades is stored and company information. The software retrieves this data and displays as per the user requirement.
+
+
 OBJECTIVE:
-
-
 The Placement Management System was developed as an attempt to take a record of company and students by restricting such a large database to that of a particular class of students or company. The System provides the facility of viewing the information of the student and company it can also search for eligible students and company and also insertion and deletion of records by the administrator. The GUI used for the project provide instruction and the various actions performed on button clicks or on selection of items, guide the user through a series of pages as in the Project.
 
 <img width="791" alt="Screen Shot 2021-04-06 at 12 49 45 PM" src="https://user-images.githubusercontent.com/13692586/113748762-e2f7f200-96d6-11eb-958c-6e85204c2e18.png">
