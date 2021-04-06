@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+
+    <title>PAMT</title>
+	
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- bootstrap theme -->
+    
+    <!--external css-->
+    <!-- font icon -->
+    <link href="css/elegant-icons-style.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />    
+    <!-- full calendar css-->
+    <link href="assets/fullcalendar/fullcalendar/bootstrap-fullcalendar.css" rel="stylesheet" />
+	<link href="assets/fullcalendar/fullcalendar/fullcalendar.css" rel="stylesheet" />
+    <!-- easy pie chart-->
+    <link href="assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <!-- owl carousel -->
+    <link rel="stylesheet" href="css/owl.carousel.css" type="text/css">
+	<link href="css/jquery-jvectormap-1.2.2.css" rel="stylesheet">
+    <!-- Custom styles -->
+	<link rel="stylesheet" href="css/fullcalendar.css">
+	<link href="css/widgets.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet" />
+	<link href="css/xcharts.min.css" rel=" stylesheet">	
+	<link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather|Roboto+Slab" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <style>
+	body {
+  		padding-top: 54px;
+		}
+
+	@media (min-width: 992px) {
+  	body {
+    		padding-top: 56px;
+  		}
+	}
+
+	.card {
+  		height: 100%;
+	}
+	#footer {
+    		position:fixed;
+    		bottom:0;
+		width:100%;
+	}
+	
+	.alertbox {
+		position: fixed;
+		height: 130px;
+		width: 300px;
+		top: 50%;
+		left: 50%;
+		margin-top: -65px;
+		margin-left: -150px;
+		background-color: white;
+		border-radius: 25px;
+	}
+	.coverScreen{
+		position: fixed;
+		top: 0%;
+		left: 0%;
+		height: 100%;
+		width: 100%;
+		background-color: rgba(0,0,0,0.8);
+	}
+	.cardtitle {
+		font-family: 'Merriweather', serif;
+		font-size: 2.2vh;
+		font-weight: bold;
+		text-transform: none;
+	}
+
+    </style>
+	<script>
+		updateCompanyList();
+		function updateCompanyList(){
+			$.ajax({
+				type : "POST",
+				url : "https://pamtpesu.azurewebsites.net/getInProcessCompList.php",
+				success : list,
+				error : failure
+			});
+		}
+		function list(data){
+			data = JSON.parse(data);
+			for(i = 0; i < data.length; i++) {
+				obj = JSON.parse(data[i]);
+				if(obj['typeofjob'] == 1)
+					toj = "Internship";
+				else if(obj['typeofjob'] == 2)
+					toj = "Full Time Employment";
+				else
+					toj = "FTE + Internship";
+				$("#company").html($("#company").html() + "<option value='" + obj["crn"] + "," + obj["typeofjob"] + "'>" + obj["name"] + " - " + toj + "</option>");
+			}
+		}
+		function failure(){
+			alert("Check your internet connection");
+		}
+		function insertValues(){
+			$.ajax({
+				type : "POST",
+				url : "https://pamtpesu.azurewebsites.net/insert.php",
+				data : {"srns" : $("#srn").val(), "crn" : $('#company').val()},
+				success : successful,
+				error : failure
+			});
+		}
+		function successful(){
+			$("#regsuccessful").show();
+			setTimeout(function(){ location.replace("home.html");}, 3000);
+		}
+		function logout(){
+			localStorage.clear();
+			location.replace('login.html');
+		}
+	</script>
+  </head>
+
+  <body>
+	
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container" >
+        
+        <a href="home.html" class="logo navbar-brand">PA<span class="lite">MT</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive" >
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="home.html">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="logout()">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+	<br><br><br><br><br><br>
+    <!-- Page Content -->
+    <div class="container">
+	<!-- Method can be set as POST for hiding values in URL-->
+	<h1>Update Selected Student List</h1><br>
+	<div class="form-group row" >	
+	<div class="col-xs-3">
+	<h3>Company:</h3>
+	<!--<input class="input" name="company" type="text" value="">-->
+	<select name="company" id="company" class="form-control">
+	<option disabled selected>Select Company</option>
+	</select>
+	</div>
+	</div>
+	<div class="form-group row" >
+	<div class="col-xs-3">
+	<h3>SRN:</h3>
+	<h5>Enter SRNs separated by commas</h5>
+	<textarea id="srn" name="srn"></textarea>
+	</div>
+	</div>
+	<input class="submit" name="submit" type="submit" value="Add" onclick="insertValues()">
+      
+
+    </div>
+	<br><br><br>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark" id="footer" >
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; PAMT 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<div class="coverScreen" style="display:none" id="regsuccessful"><div class="alertbox cardtitle" style="text-align: center; font-size: 15px;"><img src="img/tick.png"/><br/><br/>Successfully Added!<br/></div></div>
+  </body>
+
+</html>

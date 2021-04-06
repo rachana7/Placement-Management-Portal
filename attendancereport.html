@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<style>
+			h3, th {
+			border-bottom-style: dashed;
+			}
+			body {
+			font-family: "Courier New", Courier;
+			}
+		</style>
+		<meta charset="UTF-8">
+		<title>Attendance Report</title>
+		<!---<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+			<link href="https://fonts.googleapis.com/css?family=Merriweather|Roboto+Slab" rel="stylesheet">--->
+		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+		<script>
+			function getData()
+			{
+				dept = localStorage['temp'];
+				$.ajax({
+					type : "GET",
+					url : "https://pamtpesu.azurewebsites.net/attendance.php",
+					data : {"dept" : dept}, 
+					success : parseData,
+					error : failure
+				});
+			}
+			function parseData(data)
+			{
+				att = document.getElementById("att");
+				att.innerHTML = "<h3 align=center> Attendance Report - Department of " + dept + "</h3>";
+				data = JSON.parse(data);
+				for (i = 0; i < data.length; i++)
+				{
+					obj = JSON.parse(data[i]);
+					student = document.createElement('div');
+					obj1 = JSON.parse(obj[2]);
+					var HTML0 = "<table border=0 width=100%>";
+					HTML0 += "<tr><td align=left><strong>SRN:</strong> "+obj[0] +"</td>" + "<td align=right><strong>Name:</strong> "+ obj[1] +"</td></tr>";
+					HTML0 += "</table>";
+					student.innerHTML += HTML0;
+					var HTML = "<table border=0 width=100%>";
+					HTML += "<tr align=left><th width=20%>Date</th>" + "<th width=20%>Start Time</th>" + "<th width=20%>End Time</th>"+ "<th nowrap width=40%>Event</th></tr>";
+					if (JSON.parse(obj1[0] != null))
+					{
+						//att.appendChild(student);
+						
+						for (j = 0; j < obj1.length; j++)
+						{
+							obj2 = JSON.parse(obj1[j]);
+							HTML += "<tr><td>"+obj2['date'] +"</td>" + "<td>"+ obj2['starttime'] +"</td>" + "<td>" + obj2['endtime'] + "</td>"+ "<td>" + obj2['cname'] + " - "+ obj2['assessment']+"</td></tr>";
+						}
+						HTML += "<tr align=left><th width=20%></th>" + "<th width=20%></th>" + "<th width=20%></th>"+ "<th nowrap width=40%></th></tr>";
+						HTML += "</table></br></br>";
+					}
+					else
+						HTML += "<tr><td style='text-align:center' colspan='4'>No Records</td></tr><tr align=left><th width=20%></th>" + "<th width=20%></th>" + "<th width=20%></th>"+ "<th nowrap width=40%></th></tr></table></br></br>";
+					student.innerHTML += HTML;
+					att.appendChild(student);
+				}					
+			}
+			getData();
+			function failure() 
+			{
+				$("#err_msg").html("An error occured. Please try again later");
+			}
+		</script>
+	</head>
+	<body style='font-family="sans-serif"'>
+		<h1 align=center> PES University </h1>
+		<h2 align=center> Placement Central </h2>
+		<div id = "att">
+			<!--<p>Don't have an account? <a href="register.php">Sign up now</a>.</p> -->
+		</div>
+		<a href="home.html"><input type="button" value="Home" style="float: left;"></a>
+		<input type="button" value="Print" style="float: right;">
+	</body>
+</html>

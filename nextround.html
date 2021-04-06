@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+	
+
+    <title>PAMT</title>
+	
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- bootstrap theme -->
+    
+    <!--external css-->
+    <!-- font icon -->
+    <link href="css/elegant-icons-style.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />    
+    <!-- full calendar css-->
+    <link href="assets/fullcalendar/fullcalendar/bootstrap-fullcalendar.css" rel="stylesheet" />
+	<link href="assets/fullcalendar/fullcalendar/fullcalendar.css" rel="stylesheet" />
+    <!-- easy pie chart-->
+    <link href="assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <!-- owl carousel -->
+    <link rel="stylesheet" href="css/owl.carousel.css" type="text/css">
+	<link href="css/jquery-jvectormap-1.2.2.css" rel="stylesheet">
+    <!-- Custom styles -->
+	<link rel="stylesheet" href="css/fullcalendar.css">
+	<link href="css/widgets.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet" />
+	<link href="css/xcharts.min.css" rel=" stylesheet">	
+	<link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather|Roboto+Slab" rel="stylesheet">
+	<link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+
+
+
+
+    <!-- Custom styles for this template -->
+    <style>
+	body {
+  		padding-top: 54px;
+		}
+
+	@media (min-width: 992px) {
+  	body {
+    		padding-top: 56px;
+  		}
+	}
+
+	.card {
+  		height: 100%;
+	}
+	#footer {
+    		position:fixed;
+    		bottom:0;
+		width:100%;
+	}
+	
+	.alertbox {
+		position: fixed;
+		height: 130px;
+		width: 300px;
+		top: 50%;
+		left: 50%;
+		margin-top: -65px;
+		margin-left: -150px;
+		background-color: white;
+		border-radius: 25px;
+	}
+	.coverScreen{
+		position: fixed;
+		top: 0%;
+		left: 0%;
+		height: 100%;
+		width: 100%;
+		background-color: rgba(0,0,0,0.8);
+		z-index: 5;
+	}
+	.cardtitle {
+		font-family: 'Merriweather', serif;
+		font-size: 2.2vh;
+		font-weight: bold;
+		text-transform: none;
+	}
+
+    </style>
+	<script>
+		updateCompanyList();
+		dj = "";
+		function updateCompanyList(){
+			$.ajax({
+				type : "POST",
+				url : "https://pamtpesu.azurewebsites.net/getInProcessComp.php",
+				success : list,
+				error : failure
+			});
+		}
+		function list(data){
+			data = JSON.parse(data);
+			dj = data;
+			for(i = 0; i < data.length; i++) {
+				obj = JSON.parse(data[i]);
+				if(obj[2] == 1)
+					toj = "Internship";
+				else if(obj[2] == 2)
+					toj = "Full Time Employment";
+				else
+					toj = "FTE + Internship";
+				$("#company").html($("#company").html() + "<option value='" + obj[0] + "' onclick='changeStudent(" + i +")'>" + obj[1] + " - " + toj + "</option>");
+				
+			}
+			
+		}
+		function changeStudent(i){
+			srn = document.getElementById('srn');
+			obj = JSON.parse(JSON.parse(dj[i])[3]);
+			html = "";
+			for(i = 0; i < obj.length; i++) {
+				obj1 = JSON.parse(obj[i]);
+				html += "<input type='checkbox' name='selStu[]' value='" + obj1['srn'] + "'>  " + obj1['srn'] + " - " + obj1['name'] + "</input><br/><br/>";
+			}
+			srn.innerHTML = html;			
+		}
+		
+		function failure(){
+			alert("Check your internet connection");
+		}
+		function insertValues(){
+			var checkboxes = document.getElementsByName('selStu[]');
+			var vals = "";
+			n=checkboxes.length
+			for (var i=0; i<n; i++) 
+			{
+				if (checkboxes[i].checked) 
+				{
+					vals += ","+checkboxes[i].value;
+				}
+			}
+			if (vals) vals = vals.substring(1);
+			$.ajax({
+				type : "POST",
+				url : "https://pamtpesu.azurewebsites.net/insertNextRound.php",
+				data : {"srns" : vals, "crn" : $('#company').val(), "date": $('#date').val(), "toa" : $('#toa').val()},
+				success : successful,
+				error : failure
+			});
+		}
+		function successful(){
+			$("#regsuccessful").show();
+			setTimeout(function(){ location.replace("home.html");}, 3000);
+		}
+		function logout(){
+			localStorage.clear();
+			location.replace('login.html');
+		}
+	</script>
+  </head>
+
+  <body>
+	
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container" >
+        
+        <a href="home.html" class="logo navbar-brand">PA<span class="lite">MT</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive" >
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="home.html">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="logout()">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+	<br><br><br><br><br><br>
+    <!-- Page Content -->
+    <div class="container">
+	<!-- Method can be set as POST for hiding values in URL-->
+	<h1>Update Selected Student List</h1><br>
+	<div class="form-group row" >	
+	<div class="col-xs-3">
+	<h3>Company:</h3>
+	<!--<input class="input" name="company" type="text" value="">-->
+	<select name="company" id="company" class="form-control">
+	<option disabled selected>Select Company</option>
+	</select>
+	</div>
+	</div>
+    <br/>
+	<div class="form-group row" >
+	
+	<h3>Date of Next Test</h3>
+			<div class="input-group date form_datetime col-md-5" data-date="2017-11-30 00:00" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                    <input class="form-control" size="16" id="date" type="text" value="" readonly>
+                    <span class="input-group-addon"><img width="30" src="img/cal.png"/><span class="glyphicon glyphicon-th"></span></span>
+                </div>
+				<input type="hidden" id="dtp_input1" value="" /><br/>
+	</div>
+	
+	<div class="form-group row" >
+	<div class="col-xs-3">
+	<h3>Type of Assessment:</h3>
+	<h4><input type="text" name="toa" id="toa"></input></h4>
+	</div>
+	</div>
+		   
+		   
+	<div class="form-group row" >
+	<div class="col-xs-3">
+	<h3>SRN:</h3>
+	<h6>Select the students qualified for next round</h6><br/>
+	<h6><div id="srn" name="srn"></div></h6>
+	</div>
+	</div>
+	<div class="form-group row" >
+	<div class="col-xs-3">
+	<input class="submit" name="submit" type="submit" value="Add" onclick="insertValues()">
+	</div>
+	</div>
+      
+
+    </div>
+	<br><br><br>
+    
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<div class="coverScreen" style="display:none" id="regsuccessful"><div class="alertbox cardtitle" style="text-align: center; font-size: 15px;"><img src="img/tick.png"/><br/><br/>Successfully Added!<br/></div></div>
+	
+	<script type="text/javascript" src="./jquery/jquery-1.8.3.min.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="../js/locales/bootstrap-datetimepicker.fr.js" charset="UTF-8"></script>
+	<script type="text/javascript">
+		$(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii', startDate: '2017-11-30 00:00'});
+	</script>
+  </body>
+
+</html>
