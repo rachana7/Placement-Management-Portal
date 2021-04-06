@@ -7,6 +7,13 @@ OBJECTIVE:
 
 The Placement Management System was developed as an attempt to take a record of company and students by restricting such a large database to that of a particular class of students or company. The System provides the facility of viewing the information of the student and company it can also search for eligible students and company and also insertion and deletion of records by the administrator. The GUI used for the project provide instruction and the various actions performed on button clicks or on selection of items, guide the user through a series of pages as in the Project.
 
+<img width="791" alt="Screen Shot 2021-04-06 at 12 49 45 PM" src="https://user-images.githubusercontent.com/13692586/113748762-e2f7f200-96d6-11eb-958c-6e85204c2e18.png">
+
+<img width="795" alt="Screen Shot 2021-04-06 at 12 49 57 PM" src="https://user-images.githubusercontent.com/13692586/113748763-e2f7f200-96d6-11eb-9680-4b0eb22a0105.png">
+<img width="790" alt="Screen Shot 2021-04-06 at 12 50 05 PM" src="https://user-images.githubusercontent.com/13692586/113748765-e2f7f200-96d6-11eb-9b5b-6e141dad09e2.png">
+<img width="790" alt="Screen Shot 2021-04-06 at 12 50 19 PM" src="https://user-images.githubusercontent.com/13692586/113748766-e2f7f200-96d6-11eb-9cba-8f5b1cd10356.png">
+
+
 Applications:
 1. Companies and students will have registration forms to register.
 2. Admin will fill the date fixtures.
